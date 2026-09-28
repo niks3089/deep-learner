@@ -1,7 +1,7 @@
 {
   "name": "deep-learner",
   "description": "Quizzes you on the codebase you're working in — active recall graded against the actual code. Don't take your own word for it.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": {
     "name": "niks3089"
   }

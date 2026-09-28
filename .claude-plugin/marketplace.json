@@ -1,0 +1,13 @@
+{
+  "name": "niks3089",
+  "owner": {
+    "name": "niks3089"
+  },
+  "plugins": [
+    {
+      "name": "deep-learner",
+      "source": "./",
+      "description": "Quizzes you on the codebase you're working in — active recall graded against the actual code."
+    }
+  ]
+}

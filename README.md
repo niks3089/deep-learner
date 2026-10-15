@@ -19,7 +19,7 @@ A Claude Code skill that quizzes you on the system you're working in. Active rec
 
 ## Always-on mode
 
-A SessionStart hook makes it interject while you work: when you ask Claude to code something non-trivial, it first asks whether you understand what the change touches and what it could break. Intensity is configurable:
+Two hooks make it interject while you work. SessionStart loads the mode's rules once; UserPromptSubmit re-injects them on every prompt that asks for a code change or a PR (implement, fix, refactor, open a PR, push a branch, …), so the questions keep coming late in a long session instead of fading with the opening context. Questions, reviews and explanations pass through untouched, and so does a prompt that says "just do it" or "override". When a prompt matches, Claude first asks whether you understand what the change touches and what it could break. Intensity is configurable:
 
 ```
 /deep-learner:mode friend    # one quick check before non-trivial changes; "just do it" wins (default)

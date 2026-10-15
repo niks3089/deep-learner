@@ -10,6 +10,6 @@ Set the deep-learner mode to: $ARGUMENTS
 
 Mode meanings:
 - **off** — no interjections; `/deep-learner` quiz still available on demand.
-- **friend** — one quick check before non-trivial changes; "just do it" always wins.
-- **teacher** — 1-2 questions before non-trivial changes, answers graded against the code, one recall question after.
-- **drill** — 2-3 questions blocking any non-trivial code, ruthless grading, post-implementation quiz; only "override" skips.
+- **friend** — no questions before coding; one non-blocking understanding question after a non-trivial PR.
+- **teacher** — no questions before coding; two graded questions after a non-trivial PR, file:line evidence on misses.
+- **drill** — 2-3 questions blocking any non-trivial code, ruthless grading, post-PR quiz; only "override" skips.

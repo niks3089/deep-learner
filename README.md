@@ -19,12 +19,12 @@ A Claude Code skill that quizzes you on the system you're working in. Active rec
 
 ## Always-on mode
 
-Two hooks make it interject while you work. SessionStart loads the mode's rules once; UserPromptSubmit re-injects them on every prompt that asks for a code change or a PR (implement, fix, refactor, open a PR, push a branch, …), so the questions keep coming late in a long session instead of fading with the opening context. Questions, reviews and explanations pass through untouched, and so does a prompt that says "just do it" or "override". When a prompt matches, Claude first asks whether you understand what the change touches and what it could break. Intensity is configurable:
+Two hooks make it work while you work, without quizzing you up front. SessionStart loads the mode's rules; UserPromptSubmit re-injects them on prompts that ship a change (open or update a PR, commit and push), so the behaviour holds late in a long session. Nothing is asked before coding. When a PR goes up and its diff is non-trivial (more than one non-test file, more than ~40 lines, or anything touching auth, money, migrations, deploy/CI, infra or a public API), Claude ends its message with a short, non-blocking **Understanding check** drawn from that diff. Answer it or ignore it. Claude tracks which areas you answered well and which you skipped, and the on-demand `/deep-learner` quiz starts from those gaps. Intensity is configurable:
 
 ```
-/deep-learner:mode friend    # one quick check before non-trivial changes; "just do it" wins (default)
-/deep-learner:mode teacher   # 1-2 questions before coding, graded against the code, recall question after
-/deep-learner:mode drill     # 2-3 blocking questions, ruthless grading, post-implementation quiz; only "override" skips
+/deep-learner:mode friend    # one question after a non-trivial PR, non-blocking (default)
+/deep-learner:mode teacher   # two graded questions after a non-trivial PR, file:line evidence on misses
+/deep-learner:mode drill     # 2-3 blocking questions before coding plus a post-PR quiz; only "override" skips
 /deep-learner:mode off       # no interjections; /deep-learner quiz still works on demand
 ```
 

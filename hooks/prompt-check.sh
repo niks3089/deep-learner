@@ -19,9 +19,11 @@ if printf '%s' "$PROMPT" | grep -qiE '\bjust do it\b|\boverride\b|\bno questions
   exit 0
 fi
 
+# Ships a change: opens/updates a PR, pushes, or works a PR referenced by URL
+# or number (address/fix/resolve review comments, rebase, etc.).
 SHIPS=0
 printf '%s' "$PROMPT" | grep -qiE \
-  '\b(open|create|make|raise|send|push|ship|update|refresh)\b.*\b(pr|prs|pull request|merge request)\b|\bcommit\b.*\bpush\b|\bpush\b.*\b(branch|commits?|it|this)\b|\bmerge (this|it|the pr)\b' && SHIPS=1
+  '\b(open|create|make|raise|send|push|ship|update|refresh|rebase|amend)\b.*\b(pr|prs|pull request|merge request)\b|\bcommit\b.*\bpush\b|\bpush\b.*\b(branch|commits?|it|this|the fix)\b|\bmerge (this|it|the pr)\b|\b(address|fix|resolve|respond to|handle|apply)\b.*\b(review|reviewer|comments?|feedback|findings?|nits?)\b|(github\.com/[^ ]+/pull/[0-9]+|\bpr ?#?[0-9]+\b|\bpull request [0-9]+).*\b(address|fix|resolve|update|push|rebase|apply|change|implement|handle)\b|\b(address|fix|resolve|update|push|rebase|apply|change|implement|handle)\b.*(github\.com/[^ ]+/pull/[0-9]+|\bpr ?#?[0-9]+\b|\bpull request [0-9]+)' && SHIPS=1
 
 NONTRIVIAL='Non-trivial means: more than one non-test file, more than ~40 changed lines, or anything touching auth, money movement, migrations/schema, deploy/CI workflows, infra (terraform, IAM, alerts) or a public API contract. Otherwise no check.'
 

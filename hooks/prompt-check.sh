@@ -25,18 +25,19 @@ SHIPS=0
 printf '%s' "$PROMPT" | grep -qiE \
   '\b(open|create|make|raise|send|push|ship|update|refresh|rebase|amend)\b.*\b(pr|prs|pull request|merge request)\b|\bcommit\b.*\bpush\b|\bpush\b.*\b(branch|commits?|it|this|the fix)\b|\bmerge (this|it|the pr)\b|\b(address|fix|resolve|respond to|handle|apply)\b.*\b(review\w*|comments?|feedback|findings?|nits?)|(github\.com/[^ ]+/pull/[0-9]+|\bpr ?#?[0-9]+\b|\bpull request [0-9]+).*\b(address|fix|resolve|update|push|rebase|apply|change|implement|handle)\b|\b(address|fix|resolve|update|push|rebase|apply|change|implement|handle)\b.*(github\.com/[^ ]+/pull/[0-9]+|\bpr ?#?[0-9]+\b|\bpull request [0-9]+)' && SHIPS=1
 
-NONTRIVIAL='Non-trivial means: more than one non-test file, more than ~40 changed lines, or anything touching auth, money movement, migrations/schema, deploy/CI workflows, infra (terraform, IAM, alerts) or a public API contract. Otherwise no check.'
+NONTRIVIAL='Non-trivial, first matching rule wins: (1) check if it touches auth (incl. SSH keys), money, migrations/schema, prod-data-mutating scripts, deploy/CI workflows, infra (terraform, IAM, alerts), a public API, or a file whose merge triggers a deploy that stops/restarts/reconfigures a running service (SaaS dashboard/doc pushes do not count); (2) no check for typos, renames, formatting, docs, tests, config value changes (logic-bearing config like PromQL/SQL/Jinja is code); (3) check if more than one non-test file (mirrored edits count once) or more than ~40 lines; (4) otherwise no check.'
+SHAPE="The check is exactly 3 numbered questions, one ask in one sentence each: (1) trace — what happens when a concrete input goes through the changed code; (2) consequence — name a step and ask what else it touches or what breaks if it fails, is skipped or runs out of order; (3) system — which other component, job, deploy path or operator action depends on what changed, OR the blast radius, evidence outside the diff, answerable by a maintainer who never opened these files and not answered by the PR description. Every answer citable as file:line; ask what things cause, never for constants or line numbers, and a name alone is never the answer."
 
 if [ "$SHIPS" = 1 ]; then
   case "$MODE" in
     friend)
-      echo "DEEP LEARNER (friend): this prompt ships a change. Do the work first. If the resulting diff is non-trivial, end your message with an 'Understanding check': ONE question about that diff, non-blocking, once per PR. $NONTRIVIAL"
+      echo "DEEP LEARNER (friend): this prompt ships a change. Do the work first. If the resulting diff is non-trivial, end your message with an 'Understanding check', non-blocking, once per PR. $SHAPE $NONTRIVIAL"
       ;;
     teacher)
-      echo "DEEP LEARNER (teacher): this prompt ships a change. Do the work first. If the resulting diff is non-trivial, end your message with an 'Understanding check' of 2 questions drawn from the diff (one trace, one consequence), non-blocking, once per PR. Grade answers against the code with file:line evidence. $NONTRIVIAL"
+      echo "DEEP LEARNER (teacher): this prompt ships a change. Do the work first. If the resulting diff is non-trivial, end your message with an 'Understanding check', non-blocking, once per PR. Grade answers against the code with file:line evidence. $SHAPE $NONTRIVIAL"
       ;;
     drill)
-      echo "DEEP LEARNER (drill): this prompt ships a change. After the PR is up, if the diff is non-trivial, quiz on it: what changed, why there, what to check if it breaks in prod. $NONTRIVIAL"
+      echo "DEEP LEARNER (drill): this prompt ships a change. After the PR is up, if the diff is non-trivial, end with an 'Understanding check' and grade ruthlessly. $SHAPE $NONTRIVIAL"
       ;;
   esac
   exit 0

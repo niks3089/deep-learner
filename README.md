@@ -19,12 +19,12 @@ A Claude Code skill that quizzes you on the system you're working in. Active rec
 
 ## Always-on mode
 
-Two hooks make it work while you work, without quizzing you up front. SessionStart loads the mode's rules; UserPromptSubmit re-injects them on prompts that ship a change (open or update a PR, commit and push), so the behaviour holds late in a long session. Nothing is asked before coding. When a PR goes up and its diff is non-trivial (more than one non-test file, more than ~40 lines, or anything touching auth, money, migrations, deploy/CI, infra or a public API), Claude ends its message with a short, non-blocking **Understanding check** drawn from that diff. Answer it or ignore it. Claude tracks which areas you answered well and which you skipped, and the on-demand `/deep-learner` quiz starts from those gaps. Intensity is configurable:
+Two hooks make it work while you work, without quizzing you up front. SessionStart loads the mode's rules; UserPromptSubmit re-injects them on prompts that ship a change (open or update a PR, commit and push), so the behaviour holds late in a long session. Nothing is asked before coding. When a PR goes up and its diff is non-trivial (more than one non-test file, more than ~40 lines, or anything touching auth, money, migrations, deploy/CI, infra or a public API), Claude ends its message with a non-blocking **Understanding check** of three questions: two on the diff (trace a concrete input through it; what else it touches or what breaks if a piece fails) and one at system level (which other component, job or operator action depends on what changed, answerable by a maintainer who never opened the files). Answer it or ignore it. Claude tracks which areas you answered well and which you skipped, and the on-demand `/deep-learner` quiz starts from those gaps. Intensity is configurable:
 
 ```
-/deep-learner:mode friend    # one question after a non-trivial PR, non-blocking (default)
-/deep-learner:mode teacher   # two graded questions after a non-trivial PR, file:line evidence on misses
-/deep-learner:mode drill     # 2-3 blocking questions before coding plus a post-PR quiz; only "override" skips
+/deep-learner:mode friend    # 3-question check after a non-trivial PR, briefly graded, non-blocking (default)
+/deep-learner:mode teacher   # same 3 questions, graded with file:line evidence, one re-attempt on misses
+/deep-learner:mode drill     # 2-3 blocking questions before coding plus the post-PR check; only "override" skips
 /deep-learner:mode off       # no interjections; /deep-learner quiz still works on demand
 ```
 
